@@ -1,0 +1,592 @@
+:root {
+    --background-base: #000000;
+    --background-highlight: #121212;
+    --background-press: #282828;
+    --background-elevated-base: #242424;
+    --background-elevated-highlight: #2a2a2a;
+    --text-base: #ffffff;
+    --text-subdued: #a7a7a7;
+    --essential-base: #ffffff;
+    --essential-subdued: #727272;
+    --decorative-subdued: #535353;
+    --sidebar-width: 240px;
+    --player-height: 90px;
+}
+
+body {
+    font-family: 'CircularSp', 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Spotify font stack (approximation) */
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-base);
+    color: var(--text-base);
+    overflow: hidden; /* Prevent scrolling of the whole page */
+}
+
+* {
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+    color: var(--text-subdued);
+}
+
+a:hover,
+.menu li.active a,
+.playlist-nav li a:hover,
+.playlists p:hover {
+    color: var(--text-base);
+}
+
+.spotify-container {
+    display: grid;
+    grid-template-areas:
+        "sidebar main-content"
+        "player-bar player-bar";
+    grid-template-columns: var(--sidebar-width) 1fr;
+    grid-template-rows: 1fr var(--player-height);
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Sidebar */
+.sidebar {
+    grid-area: sidebar;
+    background-color: var(--background-base);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding-bottom: 24px;
+    display: flex;
+    align-items: center;
+}
+
+.logo .fa-spotify {
+    margin-right: 8px;
+    color: #1DB954; /* Spotify Green */
+}
+
+.menu ul, .playlist-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+}
+
+.menu li, .playlist-nav li {
+    padding: 8px 0;
+}
+
+.menu li a, .playlist-nav li a {
+    font-size: 0.9rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: color 0.2s ease;
+}
+
+.menu i, .playlist-nav i {
+    font-size: 1.4rem;
+    width: 24px; /* Align icons */
+    text-align: center;
+}
+
+.sidebar hr {
+    border: none;
+    height: 1px;
+    background-color: var(--background-press);
+    margin: 10px 0 20px 0;
+}
+
+.playlists {
+    flex-grow: 1;
+    overflow-y: auto; /* Allow playlists to scroll if needed */
+}
+
+.playlists p {
+    margin: 0;
+    padding: 8px 0;
+    font-size: 0.9rem;
+    color: var(--text-subdued);
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.2s ease;
+}
+
+/* Main Content */
+.main-content {
+    grid-area: main-content;
+    background: linear-gradient(to bottom, #333 0%, var(--background-highlight) 300px);
+    overflow-y: auto;
+    position: relative;
+}
+
+.top-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(51, 51, 51, 0.8); /* Semi-transparent background on scroll */
+    backdrop-filter: blur(5px);
+    gap: 15px; /* Add gap between items */
+}
+
+.navigation-arrows button {
+    background-color: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: var(--essential-base);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    margin-right: 15px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.user-profile .profile-button {
+    background-color: var(--background-press);
+    border: none;
+    color: var(--text-base);
+    border-radius: 20px;
+    padding: 5px 10px 5px 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.profile-button i.fa-user {
+    background-color: var(--essential-subdued);
+    border-radius: 50%;
+    padding: 5px;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.content-area {
+    padding: 20px 30px;
+}
+
+.content-area h1 {
+    font-size: 2rem;
+    margin-bottom: 30px;
+}
+
+.content-area h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    margin-top: 40px;
+}
+
+.content-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.content-item {
+    background-color: var(--background-elevated-base);
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    overflow: hidden;
+}
+
+.content-item img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    display: block;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.content-item .item-title {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--text-base);
+    margin: 0 0 4px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.content-item .item-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-subdued);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.content-item:hover {
+    background-color: var(--background-elevated-highlight);
+}
+
+/* Player Bar */
+.player-bar {
+    grid-area: player-bar;
+    background-color: var(--background-elevated-base);
+    border-top: 1px solid var(--background-press);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.player-left, .player-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+}
+
+.player-center {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 700px;
+}
+
+.player-right {
+    justify-content: flex-end;
+}
+
+.song-art {
+    width: 56px;
+    height: 56px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.song-art img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.song-details {
+    font-size: 0.8rem;
+}
+
+.song-title {
+    margin: 0 0 4px 0;
+    font-weight: 500;
+}
+
+.song-artist {
+    margin: 0;
+    color: var(--text-subdued);
+    font-size: 0.7rem;
+}
+
+.player-left .fa-heart {
+    color: var(--text-subdued);
+    cursor: pointer;
+}
+
+.player-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 8px;
+}
+
+.player-controls i {
+    font-size: 1rem;
+    color: var(--text-subdued);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.player-controls i:hover {
+    color: var(--text-base);
+}
+
+.player-controls .play-button {
+    font-size: 2rem; /* Larger play button */
+    color: var(--text-base);
+}
+
+.player-controls .play-button:hover {
+    transform: scale(1.05);
+}
+
+.progress-bar-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 8px;
+    font-size: 0.7rem;
+    color: var(--text-subdued);
+}
+
+.progress-bar {
+    flex-grow: 1;
+    height: 4px;
+    background-color: var(--essential-subdued);
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.player-right i {
+    font-size: 1rem;
+    color: var(--text-subdued);
+    cursor: pointer;
+}
+
+.player-right .volume-bar {
+    width: 80px;
+    height: 4px;
+    background-color: var(--essential-subdued);
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+/* Simple scrollbar styling for webkit browsers */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--essential-subdued);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: var(--background-highlight);
+}
+
+/* Add styles for library filters */
+.library-filters {
+    display: flex;
+    gap: 8px;
+    flex-grow: 1; /* Allow filters to take available space */
+    justify-content: flex-start; /* Align filters to the start */
+}
+
+.filter-button {
+    background-color: var(--background-press);
+    border: none;
+    color: var(--text-base);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.filter-button.active,
+.filter-button:hover {
+    background-color: var(--essential-base);
+    color: var(--background-base);
+}
+
+/* Adjust user profile spacing if needed */
+.user-profile {
+    margin-left: auto; /* Push user profile to the right */
+}
+
+/* Add new styles for the Liked Songs page */
+
+/* Banner styles */
+.liked-songs-banner {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin: 10px 0 40px 0;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.liked-artwork {
+    width: 180px;
+    height: 180px;
+    background: linear-gradient(135deg, #450af5, #c4efd9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.liked-artwork i {
+    font-size: 65px;
+    color: white;
+}
+
+.liked-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.liked-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin: 0;
+    color: var(--text-subdued);
+}
+
+.liked-info h1 {
+    font-size: 3rem;
+    margin: 8px 0;
+}
+
+.liked-stats {
+    color: var(--text-subdued);
+    margin: 4px 0;
+    font-size: 0.9rem;
+}
+
+/* Context section styles */
+.context-section {
+    margin-bottom: 40px;
+}
+
+.context-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.context-header i {
+    font-size: 1.6rem;
+    color: var(--text-subdued);
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background-press);
+    border-radius: 50%;
+}
+
+.context-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.context-desc {
+    color: var(--text-subdued);
+    margin: 0 0 0 auto;
+    font-size: 0.9rem;
+}
+
+/* Song list and row styles */
+.song-list {
+    background-color: var(--background-elevated-base);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.song-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.song-row:hover {
+    background-color: var(--background-elevated-highlight);
+}
+
+.song-row-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    margin-right: 16px;
+}
+
+.song-info {
+    flex-grow: 1;
+}
+
+.song-name {
+    font-weight: 500;
+    margin: 0 0 4px 0;
+}
+
+.song-artist {
+    color: var(--text-subdued);
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+.song-context {
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.context-tag {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 12px;
+    background-color: var(--background-press);
+}
+
+.context-tag.home {
+    background-color: rgba(29, 185, 84, 0.2);
+    color: #1DB954;
+}
+
+.context-tag.commute {
+    background-color: rgba(30, 144, 255, 0.2);
+    color: #1E90FF;
+}
+
+.context-tag.work {
+    background-color: rgba(255, 69, 0, 0.2);
+    color: #FF4500;
+}
+
+.context-tag.traveling {
+    background-color: rgba(138, 43, 226, 0.2);
+    color: #8A2BE2;
+}
+
+.time-tag {
+    font-size: 0.75rem;
+    color: var(--text-subdued);
+}
+
+.song-duration {
+    color: var(--text-subdued);
+    font-size: 0.8rem;
+}
+
+/* Adjust liked-header within top bar */
+.liked-header {
+    display: flex;
+    gap: 8px;
+    flex-grow: 1;
+} 
