@@ -148,4 +148,59 @@ document.addEventListener('DOMContentLoaded', function() {
             volumeIcon.classList.add('fa-volume-up');
         }
     }
+    // ===== Playlist Drag & Drop Functionality =====
+    const playlists = document.querySelectorAll(".playlists p");
+    const songs = document.querySelectorAll(".song-item, .song-row");
+
+    songs.forEach(song => {
+        song.setAttribute("draggable", "true");
+        song.addEventListener("dragstart", function(e) {
+            const title = song.querySelector(".item-title")?.textContent || song.querySelector(".song-name")?.textContent || "";
+            const artist = song.querySelector(".item-subtitle")?.textContent || song.querySelector(".song-artist")?.textContent || "";
+            const img = song.querySelector("img")?.src || "";
+            e.dataTransfer.setData("text/plain", JSON.stringify({title, artist, img}));
+        });
+    });
+
+    playlists.forEach(pl => {
+        pl.addEventListener("dragover", e => e.preventDefault());
+        pl.addEventListener("drop", function(e) {
+            e.preventDefault();
+            const data = e.dataTransfer.getData("text/plain");
+            if(!data) return;
+            const songData = JSON.parse(data);
+            const name = pl.textContent.trim();
+            const key = "playlist_" + name;
+            const list = JSON.parse(localStorage.getItem(key) || "[]");
+            list.push(songData);
+            localStorage.setItem(key, JSON.stringify(list));
+            alert(`Added ${songData.title} to ${name}`);
+        });
+
+        pl.addEventListener("click", function() {
+            const name = pl.textContent.trim();
+            const key = "playlist_" + name;
+            const list = JSON.parse(localStorage.getItem(key) || "[]");
+            let container = document.getElementById("playlist-songs-container");
+            if(!container) {
+                container = document.createElement("div");
+                container.id = "playlist-songs-container";
+                container.className = "playlist-songs-view";
+                document.querySelector(".main-content")?.appendChild(container);
+            }
+            container.innerHTML = `<h2>${name}</h2>`;
+            if(list.length === 0) {
+                container.innerHTML += "<p>No songs in this playlist.</p>";
+            } else {
+                const ul = document.createElement("ul");
+                list.forEach(s => {
+                    const li = document.createElement("li");
+                    li.textContent = s.title + (s.artist ? " - " + s.artist : "");
+                    ul.appendChild(li);
+                });
+                container.appendChild(ul);
+            }
+        });
+    });
+
 }); 
