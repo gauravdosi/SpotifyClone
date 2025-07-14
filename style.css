@@ -590,3 +590,16 @@ a:hover,
     gap: 8px;
     flex-grow: 1;
 } 
+/* Playlist song display */
+.playlist-songs-view {
+    padding: 20px;
+    color: var(--text-base);
+}
+.playlist-songs-view ul {
+    list-style: none;
+    padding: 0;
+}
+.playlist-songs-view li {
+    padding: 4px 0;
+}
+
