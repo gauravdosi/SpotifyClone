@@ -179,41 +179,55 @@ document.addEventListener('DOMContentLoaded', function() {
 
         pl.addEventListener("click", function() {
             const name = pl.textContent.trim();
-            const key = "playlist_" + name;
-            const list = JSON.parse(localStorage.getItem(key) || "[]");
-
-            let container = document.getElementById("playlist-songs-container");
-            if(!container) {
-                container = document.createElement("div");
-                container.id = "playlist-songs-container";
-                container.className = "playlist-songs-view";
-
-                const main = document.querySelector(".main-content");
-                if(main) {
-                    const ref = main.querySelector(".content-area");
-                    if(ref) {
-                        main.insertBefore(container, ref);
-                    } else {
-                        main.appendChild(container);
-                    }
-                }
-            }
-
-            container.innerHTML = `<h2>${name}</h2>`;
-            if(list.length === 0) {
-                container.innerHTML += "<p>No songs in this playlist.</p>";
-            } else {
-                const ul = document.createElement("ul");
-                list.forEach(s => {
-                    const li = document.createElement("li");
-                    li.textContent = s.title + (s.artist ? " - " + s.artist : "");
-                    ul.appendChild(li);
-                });
-                container.appendChild(ul);
-            }
-
-            container.scrollIntoView({behavior: "smooth"});
+            window.location.href = `playlist.html?name=${encodeURIComponent(name)}`;
         });
     });
 
-}); 
+    // ===== Playlist Page Rendering =====
+    const playlistSongs = document.getElementById("playlist-songs");
+    if (playlistSongs) {
+        const params = new URLSearchParams(window.location.search);
+        const playlistName = params.get("name") || "Playlist";
+        const heading = document.getElementById("playlist-name");
+        if (heading) heading.textContent = playlistName;
+
+        const key = "playlist_" + playlistName;
+        const list = JSON.parse(localStorage.getItem(key) || "[]");
+
+        if (list.length === 0) {
+            playlistSongs.innerHTML = "<p>No songs in this playlist.</p>";
+        } else {
+            list.forEach(s => {
+                const row = document.createElement("div");
+                row.className = "song-row";
+
+                const img = document.createElement("img");
+                img.className = "song-row-img";
+                img.src = s.img || "https://picsum.photos/seed/song/50";
+                img.alt = "Song Art";
+
+                const info = document.createElement("div");
+                info.className = "song-info";
+                const nameEl = document.createElement("p");
+                nameEl.className = "song-name";
+                nameEl.textContent = s.title || "";
+                const artistEl = document.createElement("p");
+                artistEl.className = "song-artist";
+                artistEl.textContent = s.artist || "";
+                info.appendChild(nameEl);
+                info.appendChild(artistEl);
+
+                const durationEl = document.createElement("div");
+                durationEl.className = "song-duration";
+                durationEl.textContent = s.duration || "";
+
+                row.appendChild(img);
+                row.appendChild(info);
+                row.appendChild(durationEl);
+
+                playlistSongs.appendChild(row);
+            });
+        }
+    }
+
+});
