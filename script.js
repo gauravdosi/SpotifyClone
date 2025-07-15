@@ -181,13 +181,24 @@ document.addEventListener('DOMContentLoaded', function() {
             const name = pl.textContent.trim();
             const key = "playlist_" + name;
             const list = JSON.parse(localStorage.getItem(key) || "[]");
+
             let container = document.getElementById("playlist-songs-container");
             if(!container) {
                 container = document.createElement("div");
                 container.id = "playlist-songs-container";
                 container.className = "playlist-songs-view";
-                document.querySelector(".main-content")?.appendChild(container);
+
+                const main = document.querySelector(".main-content");
+                if(main) {
+                    const ref = main.querySelector(".content-area");
+                    if(ref) {
+                        main.insertBefore(container, ref);
+                    } else {
+                        main.appendChild(container);
+                    }
+                }
             }
+
             container.innerHTML = `<h2>${name}</h2>`;
             if(list.length === 0) {
                 container.innerHTML += "<p>No songs in this playlist.</p>";
@@ -200,6 +211,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 container.appendChild(ul);
             }
+
+            container.scrollIntoView({behavior: "smooth"});
         });
     });
 
